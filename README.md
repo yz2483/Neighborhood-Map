@@ -1,12 +1,18 @@
 Reference:
 
-https://www.udacity.com/course/ud110
-https://www.udacity.com/course/ud989
 google MAP API
+
 FourSquare API
+
+https://www.udacity.com/course/ud110
+
+https://www.udacity.com/course/ud989
+
 http://knockoutjs.com/documentation
-https://piazza.com/class/i0sf6tsmg0r7do
+
 https://github.com/DawoonC/dw-neighborhood
+
+https://piazza.com/class/i0sf6tsmg0r7do
 
 ========================================================================================
 
