@@ -32,7 +32,7 @@ The list of view is not displayed on small devices for better user experience.
 
 Small Info window shows up when click on a mark/the photo or the name of the place in list view.
 
-The contact phone number, the status of the place, photo of the place and special offer of place if it's available display in smaill Info window.
+The contact phone number, the status of the place, photo of the place and special offer of place if it's available display in small Info window.
 
 Clicking another marker will close the previously opened info window and animation. It will open the info window and set the animation on the new marker.
 
