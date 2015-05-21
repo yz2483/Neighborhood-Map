@@ -1,47 +1,46 @@
-
 h4{   
     color: #b200ff;     
 }
+
 a {
     color: #b200ff; 
 }
 
-#map-canvas {
-	height: 100%
+.map-canvas {
+	height: 100%;
 	width: 100%;
-	padding-right: 20%;
-	padding-left: 20%;
+	padding:0 20% 0 20%;	
 	display: block;
 	overflow: auto;
 }
 
 .venu-group {
 	position: absolute;
-	top: 5px;  
-    overflow: auto;
-	width: 380px;
-	height: 85%;
-	right: 30px;
+	top: 3.5em;  
+    overflow: auto;  
+    width: 23em;
+	height: 90%;
+	right: 1.5em;
 	z-index: 1;
 }
+
 .media {
 	background: #e8e8ee;
 }
+
 .venueInfowindow {
-	max-width: 295px;
-    
+	max-width: 28rem; 
+    overflow: hidden;     
 }
 
 .center {
-    margin-left: auto;
-    margin-right: auto;
-    width: 90%;
-   
+    #margin:  0 auto 0 auto;
+    margin:0 auto;
+    width: 90%;    
 }
 
 .venueInfowindow .venueName {
-	font-size: 18px;
-	font-weight: 400;
+    font: normal 400 1.3em/1.2 Arial, sans-serif;  
 }
 
 .venueInfowindow .special {   
@@ -55,31 +54,107 @@ a {
 .left-inner-addon {
 	position: relative;
 }
+
 .search-bar {
 	position: absolute;
-	top: 5px;
+	top: 0.6em;
 	z-index: 1;
-	left: 50px;
+	left: 3.5em;
 }
+
 .bgimg {
-	max-width: 250px !important;
+	max-width: 25em !important;
 }
+
 .search-bar input.form-control {
 	width: 120px;
 	display: inline-block;
 	font-size: 12px;
 }
 
-#display_list{
-	display:none;
+.map-error {		
+	width: 100%;	
+    padding: 0;	
+    column-span: all;
 }
 
-#map-error {
+@media only screen and (max-width : 760px) {
+	.venu-group {
+		position: absolute;
+		top: 25em;		
+		width: 55%;
 		height: 100%;
-		width: 100%;
-		padding-right: 20%;
-		padding-left: 60%;
-		display: block;
-		overflow: auto;
-}
+		right: 1em;
+		z-index: 0;
+		font-size: small; 
+        overflow: scroll;
+        -webkit-overflow-scrolling: touch;           
+	}
 
+    .venueInfowindow {
+	    max-width: 28rem;      
+        overflow: hidden;      
+    }
+
+	.media {
+		width: 200px;
+		height: 60px;
+		background: #e8e8ee;
+		font-size: small !important;
+	}
+
+	.pull-left {
+		width: 60px;
+	}
+
+ 	.search-bar {
+		position: absolute;
+		top: 0.6em;
+		z-index: 0;
+		left: 3em;
+	}
+
+	.search-bar input {
+		width: 100px;
+		display: inline-block;
+		font-size: 10px;
+	 }
+
+	.badge {
+		font-size: 8px;        
+	}
+
+	.media-heading,.list-group-item-text {
+		font-size: 10px;
+		word-wrap: break-word;
+	}
+
+	.venueInfowindow {
+		max-width: 20rem;        
+	}
+
+	.venueInfowindow .venueName {
+	    font-size: 10px; 
+	}
+
+	.map-error {		
+        column-span: all;
+		padding: 0;		
+	}
+
+    .map-canvas {
+	    height: 100%;
+	    width: 100%;
+	    padding:0;	
+	    display: block;
+	    overflow: auto;
+    }
+
+    .container-fluid {
+       padding: 0;
+    }
+
+    body {
+        padding: 0;
+    }
+}

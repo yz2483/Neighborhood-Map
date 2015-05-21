@@ -1,5 +1,5 @@
 // declares global variables
-var Markers = [];
+var markers = [];
 var neighborMap;
 
 // infoWindows are the little helper windows that open when you click or hover over a pin on a map
@@ -10,38 +10,39 @@ if (typeof google != "undefined") {
 
 
 $(document).ready(function() {
-
 	initializeMap();
 	ko.applyBindings(new ViewModel());
-
 });
 
 /**
  * Model for neighborhood places
  */
 var PopularPlaces = function (item) {
-    this.name = ko.observable(item.venue.name);
-    this.category = ko.observable(item.venue.categories[0].name);
-    this.address = ko.observable(item.venue.location.formattedAddress);
-    this.phone = ko.observable(item.venue.contact.formattedPhone);
-    this.rating = ko.observable(item.venue.rating);
-    this.ratingColor = ko.observable(item.venue.ratingColor);
-    this.status = ko.observable(item.venue.hours.status);
-    this.special = ko.observable(item.venue.specials.items[0]);
-    this.imgSrc = ko.observable('https://irs0.4sqi.net/img/general/100x100' + item.venue.photos.groups[0].items[0].suffix);
+    var itemVenue = item.venue;
+    this.name = ko.observable(itemVenue.name);
+    this.category = ko.observable(itemVenue.categories[0].name);
+    this.address = ko.observable(itemVenue.location.formattedAddress);
+    this.phone = ko.observable(itemVenue.contact.formattedPhone);
+    this.rating = ko.observable(itemVenue.rating);
+    this.ratingColor = ko.observable(itemVenue.ratingColor);
+        
+    if(typeof itemVenue.hours != 'undefined' && typeof itemVenue.hours.status != 'undefined'){
+        this.status = ko.observable(itemVenue.hours.status);
+    }
+    if (typeof itemVenue.specials != 'undefined' && typeof itemVenue.specials.items[0] != 'undefined' ) {
+        this.special = ko.observable(itemVenue.specials.items[0]);
+    }
+    this.imgSrc = ko.observable('https://irs0.4sqi.net/img/general/100x100' + itemVenue.photos.groups[0].items[0].suffix);
 
 
     this.updatedRatingColor = ko.computed(function () {
-             return "#" + this.ratingColor();    
-       
+        return "#" + this.ratingColor();
     }, this);
-}
+};
 
 
 var ViewModel = function () {
     var self = this;
-    // create an array to keep marker map locations
-   
 
     // create an observable array to keep each popular place in it
     self.placeList = ko.observableArray([]);
@@ -50,9 +51,8 @@ var ViewModel = function () {
     self.preferredLoc = ko.observable("Seattle, WA");
     //prefered type of location
     self.preferredExplore = ko.observable("Coffee");
-  
-        
-    /**
+
+   /**
     * When search button is clicked call this function
     * First filter through list if the key word was not in current list
     * then send it through API call
@@ -81,55 +81,47 @@ var ViewModel = function () {
         $.getJSON(foursqureUrl, function (data) {
 
             var places = data.response.groups[0].items;
-            setMapBoundry(data.response.suggestedBounds)
+            setMapBoundry(data.response.suggestedBounds);
 
             for (var i = 0; i < places.length; i++) {
                 var item = places[i];
                 // just add those items in list which has picture
-                if (item.venue.photos.groups.length != 0) {
+                if (item.venue.photos.groups.length !== 0) {
                     self.placeList.push(new PopularPlaces(item));
                     allPlaces.push(item.venue);
-                };
+                }
             }
             // sort an array based on ranking
             self.placeList.sort(function (left, right) {
-                return left.rating() == right.rating() ? 0 : (left.rating() > right.rating() ? -1 : 1)
+                return left.rating() == right.rating() ? 0 : (left.rating() > right.rating() ? -1 : 1);
             });
             // create marker for all places on map
             pinPoster(allPlaces);
-        }).error(function (e) {          
+
+        }).error(function (e) {
             $('.venu-group').html('<center><h4 style="color:red;">There is problem to retrieve data</br>Please try again later</h4><center>');
 
         });
 
-    }
+    };
 
     self.searchPlaces();
-    
-    /**
-    * Change the boolean value of displaying places list  
-    * When user click on collapsible icon
-    */
-    /*
-    self.toggleDisplay = function () {
-        self.displayPlaces(!self.displayPlaces());
-    }
-    */
-    /**
+
+   /**
     * When list item clicked on UI then call this function
     * Look if name of clicked item is equal to anyone in markers list
     * @param {object} venue - is an object  containing information about the clicked place
     */
     self.focusMarker = function (venue) {
         var venueName = venue.name();
-        for (var i = 0; i < Markers.length; i++) {
-            if (Markers[i].title == venueName) {
-                google.maps.event.trigger(Markers[i], 'click');
-                neighborMap.panTo(Markers[i].position);
+
+        for (var i = 0; i < markers.length; i++) {
+            if (markers[i].title == venueName) {
+                google.maps.event.trigger(markers[i], 'click');
+                neighborMap.panTo(markers[i].position);
             }
-        }
-      
-    }
+        }        
+    };
 };
 
 /**
@@ -140,32 +132,34 @@ function initializeMap() {
 
 	var places;
 	var mapOptions = {
-		zoom: 10,
+		zoom: 12,
         zoomControl: true,
 		disableDefaultUI: true
 	};
 
 	try {
 		// This next line makes `neighborMap` a new Google Map JavaScript Object and attaches it to
-		neighborMap = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-		$('#map-canvas').height($(window).height());
+		neighborMap = new google.maps.Map(document.getElementsByClassName('map-canvas')[0], mapOptions);
+		$('.map-canvas').height($(window).height());
 	} catch (err) {
 		//if google map api didnt respond
-		$('#map-canvas').hide();		
-		$('#map-error').html('<enter><h4 style="color:red;font-weight:200;">There is problem to retrieve data from google map</br>Please try again later</h4></center>');
+		$('.map-canvas').hide();
+		$('.form-inline').hide();
+		$('.search-bar').hide();	
+		$('.map-error').html('<center><h4 style="color:red;font-weight:200;">There is problem to retrieve data from google map</br>Please try again later</h4></center>');
 
 	}
 }
 
 
 /**
-* Remove all markers from maps
-*/
+ * Remove all markers from maps
+ */
 
 function removeMarkers() {
     //remove all markers from map
-    for (var i = 0; i < Markers.length; i++) {
-        Markers[i].setMap(null);
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
     }
 }
 
@@ -184,14 +178,13 @@ function setMapBoundry(bounds_suggested) {
         // center the map
         neighborMap.setCenter(bounds_target.getCenter());
     }
-
 }
 
 /**
-* set InfoWindo value
-* @param {object} placeData - places retrive from api
-* @param {object} marker - marker location
-*/
+ * set InfoWindo value
+ * @param {object} placeData - places retrive from api
+ * @param {object} marker - marker location
+ */
 
 function setInfoWindow(placeData, marker) {
 
@@ -201,17 +194,17 @@ function setInfoWindow(placeData, marker) {
     var ratingColor = placeData.ratingColor; //place rating color        
     var placeUrl = placeData.url; //place url for its website 
     var name = placeData.name;
-    var status = placeData.hours.status;
-
+    var status, statusString;
     var specialOffer, specialOfferString;
 
+    if (typeof placeData.hours != 'undefined' &&  typeof placeData.hours.status != 'undefined') {
+        status = placeData.hours.status;
+        statusString = '<span class="glyphicon glyphicon-time"></span>' + status;
+    }
 
-    if (typeof placeData.specials.items[0] != "undefined") {
+    if (typeof placeData.specials != 'undefined' &&  typeof placeData.specials.items[0] != 'undefined') {
         specialOffer = placeData.specials.items[0].message;
-
-        specialOfferString = '<div class="venueInfowindow">'
-                                + '<span class="glyphicon glyphicon-time"></span>' + specialOffer
-                                + '</div>';
+        specialOfferString = '<div class="venueInfowindow"><span class="glyphicon glyphicon-time"></span>' + specialOffer + '</div>';
     }
 
 
@@ -221,16 +214,21 @@ function setInfoWindow(placeData, marker) {
     //create new content 
     var contentString = '<div class="venueInfowindow center">'
                             + '<div class="venueName">'
-                                + '<a href ="' + placeUrl + '" target="_blank" >' + name + '</a>'
-                              + '<span class="venueRating label-info badge" style="background-color:#' + ratingColor + '">' + rating + '</span>'                  
-                            + '</div>'                          
-                            + '<span class="glyphicon glyphicon-time"></span>' + status
-                            + ' <br/>'
+                            + '<a href ="' + placeUrl + '" target="_blank" >' + name + '</a>'
+                            + '<span class="venueRating label-info badge" style="background-color:#' + ratingColor + '">' + rating + '</span>'                  
+                            + '</div>';
+
+    //Only add status when it's available 
+     if (typeof placeData.hours != 'undefined' &&  typeof placeData.hours.status != 'undefined') {
+         contentString = contentString + statusString;
+    }
+
+    contentString = contentString                       + ' <br/>'
                             + '<span class="glyphicon glyphicon-earphone"></span>' + contact                         
                             + '<img class="bgimg" src="' + streetviewUrl + '">';
 
     //Only add special offer when it's available 
-    if (typeof placeData.specials.items[0] != "undefined") {
+    if (typeof placeData.specials != 'undefined' &&  typeof placeData.specials.items[0] != 'undefined') {
         contentString = contentString
                                 + '<div class="special">'
                                 + '<span class="glyphicon glyphicon-gift"></span>' + specialOffer
@@ -239,17 +237,24 @@ function setInfoWindow(placeData, marker) {
     contentString = contentString + '</div>';
 
     google.maps.event.addListener(marker, 'click', function () {
+        var left = ($(window).width()) / 2;
+        var top = ($(window).height()) / 3;
+
+        // returns LatLng object
+        var latLng = marker.getPosition();
+        // Set map centers on the selected marker
+        neighborMap.setCenter(latLng);
+
         infoWindow.setContent(contentString);
         infoWindow.open(neighborMap, marker);
-           
-    });
-        
+    
+    });        
 }
 
 /**
-* pinPoster(Places) takes in the array of Places received from foursquer and call createMapMarker for each location
-* @param {object} Places - is an array of object returned from search results containing information about the places from fourSquare Api
-*/
+ * pinPoster(Places) takes in the array of Places received from foursquer and call createMapMarker for each location
+ * @param {object} Places - is an array of object returned from search results containing information about the places from fourSquare Api
+ */
 
 function pinPoster(Places) {
     // call createMapMarker for places
@@ -258,10 +263,11 @@ function pinPoster(Places) {
     }
 }
 
+
 /**
-* createMapMarker(placeData) reads Places information to create map pins.
-* @param {object} placeData - placeData is the object returned from search results containing information about the place from fourSquare Api
-*/
+ * createMapMarker(placeData) reads Places information to create map pins.
+ * @param {object} placeData - placeData is the object returned from search results containing information about the place from fourSquare Api
+ */
 
 function createMapMarker(placeData) {
 
@@ -278,16 +284,8 @@ function createMapMarker(placeData) {
         });
 
         //save marker for each place in this array
-        Markers.push(marker);
+        markers.push(marker);    
 
-        setInfoWindow(placeData, marker)
+        setInfoWindow(placeData, marker);
     }
 }
-
-
-
-
-
-
-
-

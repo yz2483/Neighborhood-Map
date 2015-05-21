@@ -28,6 +28,8 @@ Click the search icon to search places in a location. The list view, as well as 
 
 You can see sorted places based on their ranking. The photo of the place, name of the place,ranking, place catergory and address are in each place view of the list
 
+The list of view is not displayed on small devices for better user experience. 
+
 Small Info window shows up when click on a mark/the photo or the name of the place in list view.
 
 The contact phone number, the status of the place, photo of the place and special offer of place if it's available display in smaill Info window.
@@ -35,4 +37,11 @@ The contact phone number, the status of the place, photo of the place and specia
 Clicking another marker will close the previously opened info window and animation. It will open the info window and set the animation on the new marker.
 
 If the place has website then you can find out its website by clicking on name of the place.  
+
+******************************************
+How to run Neighborhood Map:
+
+Visit my GitHub page (https://github.com/yz2483/Neighborhood-Map.git) to download zip file to your PC. After download, unzip the file.
+Open the unzipped folder on your PC, click on index.html and enjoy the app.
+
 
