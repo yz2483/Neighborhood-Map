@@ -28,7 +28,7 @@ Click the search icon to search places in a location. The list view, as well as 
 
 You can see sorted places based on their ranking. The photo of the place, name of the place,ranking, place catergory and address are in each place view of the list
 
-The list of view is not displayed on small devices for better user experience. 
+On small mobile devices, the list view can be collapse or expand using '-' or '+' sign on the left corner of the screen.
 
 Small Info window shows up when click on a mark/the photo or the name of the place in list view.
 

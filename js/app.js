@@ -1,14 +1,18 @@
 // declares global variables
 var markers = [];
 var neighborMap;
+var allwindows = new Array();
 
 // infoWindows are the little helper windows that open when you click or hover over a pin on a map
+/*
 if (typeof google != "undefined") {
     var infoWindow = new google.maps.InfoWindow();
 }
+*/
 
-
-
+/**
+ * Initialize google MAP and apply the bindings for ViewModel()
+ */
 $(document).ready(function() {
 	initializeMap();
 	ko.applyBindings(new ViewModel());
@@ -51,6 +55,9 @@ var ViewModel = function () {
     self.preferredLoc = ko.observable("Seattle, WA");
     //prefered type of location
     self.preferredExplore = ko.observable("Coffee");
+
+    // boolean value for places list display
+	self.displayPlaces = ko.observable('true');
 
    /**
     * When search button is clicked call this function
@@ -107,6 +114,14 @@ var ViewModel = function () {
 
     self.searchPlaces();
 
+    /**
+	 * Change the boolean value of displaying places list  
+	 * When the user clicks on the '+' or '-' button, the list of results are displayed or collapsed on a mobile device.
+	 */
+	self.toggleDisplay = function() {
+		self.displayPlaces(!self.displayPlaces());
+	}
+
    /**
     * When list item clicked on UI then call this function
     * Look if name of clicked item is equal to anyone in markers list
@@ -120,7 +135,11 @@ var ViewModel = function () {
                 google.maps.event.trigger(markers[i], 'click');
                 neighborMap.panTo(markers[i].position);
             }
-        }        
+        } 
+        // call it just for small screen 
+		if($('.toggle').css('display')!="none"){
+		    self.toggleDisplay();
+		}       
     };
 };
 
@@ -134,6 +153,12 @@ function initializeMap() {
 	var mapOptions = {
 		zoom: 12,
         zoomControl: true,
+        /*   
+        panControl: true,
+        panControlOptions: {
+            style: google.maps.ZoomControlStyle.DEFAULT,
+            position: google.maps.ControlPosition.LEFT_BOTTOM
+        },*/
 		disableDefaultUI: true
 	};
 
@@ -236,19 +261,47 @@ function setInfoWindow(placeData, marker) {
     }
     contentString = contentString + '</div>';
 
-    google.maps.event.addListener(marker, 'click', function () {
-        var left = ($(window).width()) / 2;
-        var top = ($(window).height()) / 3;
+    
+    //Use InfoBox to customize the position of info window and also appearance of the window. 
+    var boxText = document.createElement("div");
+    boxText.style.cssText = "border: 1px solid black; margin:0; background:#FFF ; padding: 0;";
+    boxText.innerHTML = contentString;
 
+    var myOptions = {
+        content: boxText
+		, disableAutoPan: false
+		, maxWidth: 0
+		, pixelOffset: new google.maps.Size(-225, -205)
+		, zIndex: null
+		, boxStyle: {
+		    opacity: 1		    
+		}
+		, closeBoxMargin: "2px 2px 2px 2px"
+		, closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif"
+		, infoBoxClearance: new google.maps.Size(1, 1)
+		, isHidden: false
+		, pane: "floatPane"
+		, enableEventPropagation: false
+    };
+
+    var infobox = new InfoBox(myOptions);
+   
+    allwindows.push(infobox);
+
+    google.maps.event.addListener(marker, 'click', function () {
         // returns LatLng object
         var latLng = marker.getPosition();
         // Set map centers on the selected marker
         neighborMap.setCenter(latLng);
 
-        infoWindow.setContent(contentString);
-        infoWindow.open(neighborMap, marker);
+        close_popups();
+        
+        infobox.open(neighborMap, marker);
+
+        //infoWindow.setContent(contentString);
+        // infoWindow.open(neighborMap, marker);
+    });   
     
-    });        
 }
 
 /**
@@ -288,4 +341,13 @@ function createMapMarker(placeData) {
 
         setInfoWindow(placeData, marker);
     }
+}
+
+/**
+ * close all pop out window on the map before click a marker
+ */
+function close_popups(){
+  for(var i = 0; i<allwindows.length; i++){
+    allwindows[i].close();
+  }
 }
