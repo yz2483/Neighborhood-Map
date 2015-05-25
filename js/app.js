@@ -1,14 +1,7 @@
 // declares global variables
 var markers = [];
 var neighborMap;
-var allwindows = new Array();
-
-// infoWindows are the little helper windows that open when you click or hover over a pin on a map
-/*
-if (typeof google != "undefined") {
-    var infoWindow = new google.maps.InfoWindow();
-}
-*/
+var allwindows = [];
 
 /**
  * Initialize google MAP and apply the bindings for ViewModel()
@@ -57,9 +50,9 @@ var ViewModel = function () {
     self.preferredExplore = ko.observable("Coffee");
 
     // boolean value for places list display
-	self.displayPlaces = ko.observable('true');
+    self.displayPlaces = ko.observable('true');
 
-   /**
+    /**
     * When search button is clicked call this function
     * First filter through list if the key word was not in current list
     * then send it through API call
@@ -80,7 +73,10 @@ var ViewModel = function () {
         var query = '&query=' + self.preferredExplore();
 
         // load popular places	
-        var foursqureUrl = 'https://api.foursquare.com/v2/venues/explore?' + '&client_id=TYMQXOULIRK3I4V0E5BPIDPWYPCFMNDSXMS0C0AY2P5NJOXN' + '&client_secret=R4RUV2LSQVGVBK1SIIUEH2LYQ1FM3QC4QC0NEMVK0B2OCTIA' + '&v=20150505&venuePhotos=1' + placeNear + query;
+        var foursqureUrl = 'https://api.foursquare.com/v2/venues/explore?' +
+                           '&client_id=TYMQXOULIRK3I4V0E5BPIDPWYPCFMNDSXMS0C0AY2P5NJOXN' +
+                           '&client_secret=R4RUV2LSQVGVBK1SIIUEH2LYQ1FM3QC4QC0NEMVK0B2OCTIA' +
+                           '&v=20150505&venuePhotos=1' + placeNear + query;
         //https://api.foursquare.com/v2/venues/explore?&client_id=TYMQXOULIRK3I4V0E5BPIDPWYPCFMNDSXMS0C0AY2P5NJOXN&client_secret=R4RUV2LSQVGVBK1SIIUEH2LYQ1FM3QC4QC0NEMVK0B2OCTIA&v=20150505&venuePhotos=1&near=Seattle,WA&query=Coffee 
 
 
@@ -106,7 +102,9 @@ var ViewModel = function () {
             pinPoster(allPlaces);
 
         }).error(function (e) {
-            $('.venu-group').html('<center><h4 style="color:red;">There is problem to retrieve data</br>Please try again later</h4><center>');
+            $('.venu-group').html('<center>'+
+                                  '<h4 style="color:red;">There is problem to retrieve data</br>Please try again later</h4>'+
+                                  '<center>');
 
         });
 
@@ -115,14 +113,14 @@ var ViewModel = function () {
     self.searchPlaces();
 
     /**
-	 * Change the boolean value of displaying places list  
-	 * When the user clicks on the '+' or '-' button, the list of results are displayed or collapsed on a mobile device.
-	 */
-	self.toggleDisplay = function() {
-		self.displayPlaces(!self.displayPlaces());
-	}
+    * Change the boolean value of displaying places list  
+    * When the user clicks on the '+' or '-' button, the list of results are displayed or collapsed on a mobile device.
+    */
+    self.toggleDisplay = function () {
+        self.displayPlaces(!self.displayPlaces());
+    };
 
-   /**
+    /**
     * When list item clicked on UI then call this function
     * Look if name of clicked item is equal to anyone in markers list
     * @param {object} venue - is an object  containing information about the clicked place
@@ -135,11 +133,11 @@ var ViewModel = function () {
                 google.maps.event.trigger(markers[i], 'click');
                 neighborMap.panTo(markers[i].position);
             }
-        } 
+        }
         // call it just for small screen 
-		if($('.toggle').css('display')!="none"){
-		    self.toggleDisplay();
-		}       
+        if ($('.toggle').css('display') != "none") {
+            self.toggleDisplay();
+        }
     };
 };
 
@@ -152,13 +150,7 @@ function initializeMap() {
 	var places;
 	var mapOptions = {
 		zoom: 12,
-        zoomControl: true,
-        /*   
-        panControl: true,
-        panControlOptions: {
-            style: google.maps.ZoomControlStyle.DEFAULT,
-            position: google.maps.ControlPosition.LEFT_BOTTOM
-        },*/
+        zoomControl: true,       
 		disableDefaultUI: true
 	};
 
@@ -171,7 +163,11 @@ function initializeMap() {
 		$('.map-canvas').hide();
 		$('.form-inline').hide();
 		$('.search-bar').hide();	
-		$('.map-error').html('<center><h4 style="color:red;font-weight:200;">There is problem to retrieve data from google map</br>Please try again later</h4></center>');
+		$('.map-error').html('<center>'+
+                              '<h4 style="color:red;font-weight:200;">There is problem to retrieve data from google map</br>'+
+                              'Please try again later'+
+                              '</h4>'+
+                              '</center>');
 
 	}
 }
@@ -237,51 +233,54 @@ function setInfoWindow(placeData, marker) {
     var streetviewUrl = 'http://maps.googleapis.com/maps/api/streetview?size=250x130&location=' + address + '';
 
     //create new content 
-    var contentString = '<div class="venueInfowindow center">'
-                            + '<div class="venueName">'
-                            + '<a href ="' + placeUrl + '" target="_blank" >' + name + '</a>'
-                            + '<span class="venueRating label-info badge" style="background-color:#' + ratingColor + '">' + rating + '</span>'                  
-                            + '</div>';
+    var contentString = '<div class="venueInfowindow center">'+
+                        '<div class="venueName">'+
+                        '<a href ="' + placeUrl + '" target="_blank" >' + name + '</a>'+
+                        '<span class="venueRating label-info badge" style="background-color:#' + ratingColor + '">' + rating + '</span>'+                 
+                        '</div>';
 
     //Only add status when it's available 
      if (typeof placeData.hours != 'undefined' &&  typeof placeData.hours.status != 'undefined') {
          contentString = contentString + statusString;
     }
 
-    contentString = contentString                       + ' <br/>'
-                            + '<span class="glyphicon glyphicon-earphone"></span>' + contact                         
-                            + '<img class="bgimg" src="' + streetviewUrl + '">';
+    contentString = contentString +
+                            ' <br/>'+
+                            '<span class="glyphicon glyphicon-earphone"></span>' + contact +                         
+                            '<img class="bgimg" src="' + streetviewUrl + '">';
 
     //Only add special offer when it's available 
     if (typeof placeData.specials != 'undefined' &&  typeof placeData.specials.items[0] != 'undefined') {
-        contentString = contentString
-                                + '<div class="special">'
-                                + '<span class="glyphicon glyphicon-gift"></span>' + specialOffer
-                                + '</div>';
+        contentString = contentString +
+                                '<div class="special">'+
+                                '<span class="glyphicon glyphicon-gift"></span>' + specialOffer +
+                                '</div>';
     }
     contentString = contentString + '</div>';
 
     
-    //Use InfoBox to customize the position of info window and also appearance of the window. 
-    var boxText = document.createElement("div");
-    boxText.style.cssText = "border: 1px solid black; margin:0; background:#FFF ; padding: 0;";
-    boxText.innerHTML = contentString;
+    //Use InfoBox to customize the position of info window and also appearance of the window.
+    var boxText = document.getElementsByClassName('infobox')[0];
+    boxText.setAttribute("class","infobox");
+    boxText.style.display = "block";
+    boxText.innerHTML = contentString;  
+
 
     var myOptions = {
-        content: boxText
-		, disableAutoPan: false
-		, maxWidth: 0
-		, pixelOffset: new google.maps.Size(-225, -205)
-		, zIndex: null
-		, boxStyle: {
+        content: boxText,
+        disableAutoPan: false,
+		maxWidth: 0,
+		pixelOffset: new google.maps.Size(-225, -205),
+		zIndex: null,
+		boxStyle: {
 		    opacity: 1		    
-		}
-		, closeBoxMargin: "2px 2px 2px 2px"
-		, closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif"
-		, infoBoxClearance: new google.maps.Size(1, 1)
-		, isHidden: false
-		, pane: "floatPane"
-		, enableEventPropagation: false
+		},
+        closeBoxMargin: "2px 2px 2px 2px",
+		closeBoxURL: "http://www.google.com/intl/en_us/mapfiles/close.gif",
+		infoBoxClearance: new google.maps.Size(1, 1),
+		isHidden: false,
+		pane: "floatPane",
+		enableEventPropagation: false
     };
 
     var infobox = new InfoBox(myOptions);
@@ -294,12 +293,8 @@ function setInfoWindow(placeData, marker) {
         // Set map centers on the selected marker
         neighborMap.setCenter(latLng);
 
-        close_popups();
-        
-        infobox.open(neighborMap, marker);
-
-        //infoWindow.setContent(contentString);
-        // infoWindow.open(neighborMap, marker);
+        close_popups();        
+        infobox.open(neighborMap, marker);       
     });   
     
 }

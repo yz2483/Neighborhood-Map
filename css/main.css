@@ -33,6 +33,13 @@ a {
 	background: #e8e8ee;
 }
 
+.infobox{
+    border: 1px solid black; 
+    margin: 0; 
+    background:#FFF ; 
+    padding: 3px;    
+}
+
 .venueInfowindow {
 	max-width: 28rem; 
     overflow: hidden;     
@@ -114,7 +121,6 @@ a {
         float: right;       
     }  
 
-
 	.pull-left {
 		width: 60px;
 	}
@@ -140,6 +146,13 @@ a {
 		font-size: 10px;
 		word-wrap: break-word;
 	}
+
+    .infobox {
+        border: 1px solid black; 
+        margin: 0; 
+        background:#FFF ; 
+        padding: 0;    
+    }
 
 	.venueInfowindow {
 		max-width: 20rem; 
@@ -171,5 +184,4 @@ a {
     body {
         padding: 0 0 0 1.2em;
     }
-
 }

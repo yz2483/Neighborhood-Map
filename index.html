@@ -1,60 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Neighborhood</title>
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">        
-	<link rel="stylesheet" href="css/main.css" /> 
-</head>
-<body>
-<div class="container-fluid">       
-    <div class="row">                
-		<div class="col-xs-14"> 
-            <div class="map-error"></div>           
-			<div class="map-canvas"></div>
-
-			<form class="form-inline search-bar" role="search">
-				<div class="row">
-			        <div class="form-group col-xs-4 col-m-4">
-			            <input data-bind="value: preferredExplore" type="search" class="form-control" placeholder="Coffee" >
-			        </div>
-			        <div class="form-group col-xs-4 col-m-4">
-			           <input data-bind="value: preferredLoc" type="search" class="form-control"  placeholder="Seattle, WA">
-			        </div>
-				    <div class="form-group col-xs-4 col-m-4">
-			            <button class="btn btn-default btn-md" type="submit" data-bind="click:searchPlaces"><span class="glyphicon glyphicon-search"></span></button>                      
-   			        </div>                  
-			   </div>				
-			</form>         
-            <div data-bind="visible: displayPlaces" style="display:block">
-                <div class="list-group venu-group" data-bind="foreach: placeList">
-				    <div class="media" data-bind="click: $root.focusMarker">
-					    <a class="pull-left" href="#" target="_parent"><img alt="image" class="img-responsive" data-bind="attr: {src: imgSrc}"></a>
-					    <div class="media-body">
-						    <span class="venueRating label-info badge" data-bind="text: rating,style: {'background-color': updatedRatingColor}"> </span>
-						    <a href="#" target="_parent"><h4 class="list-group-item-heading media-heading" data-bind="text: name"></h4></a>	
-						    <p class="list-group-item-text " data-bind="text: category"></p>
-						    <p class="list-group-item-text" data-bind="text: address"></p>
-					    </div>
-				    </div>			
-		       </div>
-            </div>
-           <div class="toggle">
-                <button  data-bind="click:toggleDisplay" class="btn btn-primary">
-                    <span data-bind="css: {'glyphicon glyphicon-minus': displayPlaces(), 'glyphicon glyphicon-plus': !displayPlaces()}"></span>
-                </button>
-          </div>
-		</div>
-	</div>
-</div>
-
-<script src="js/knockout-3.3.0.js"></script>
-<script src="js/jQuery.js"></script>
-<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
-<script type="text/javascript" src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
-<script src="js/app.js"></script>
-</body>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Neighborhood</title>
+        <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">        
+	    <link rel="stylesheet" href="css/main.css" /> 
+    </head>
+    <body>
+        <div class="container-fluid">       
+            <div class="row">                
+		        <div class="col-xs-14"> 
+                    <div class="map-error"></div>           
+			        <div class="map-canvas"></div>
+			        <form class="form-inline search-bar" role="search">
+				        <div class="row">
+			                <div class="form-group col-xs-4 col-m-4">
+			                    <input data-bind="value: preferredExplore" type="search" class="form-control" placeholder="Coffee" >
+			                </div>
+			                <div class="form-group col-xs-4 col-m-4">
+			                   <input data-bind="value: preferredLoc" type="search" class="form-control"  placeholder="Seattle, WA">
+			                </div>
+				            <div class="form-group col-xs-4 col-m-4">
+			                    <button class="btn btn-default btn-md" type="submit" data-bind="click:searchPlaces"><span class="glyphicon glyphicon-search"></span></button>                      
+   			                </div>                  
+			           </div>				
+			        </form>         
+                    <div data-bind="visible: displayPlaces" style="display:block">
+                        <div class="list-group venu-group" data-bind="foreach: placeList">
+				            <div class="media" data-bind="click: $root.focusMarker">
+					            <a class="pull-left" href="#" target="_parent"><img alt="image" class="img-responsive" data-bind="attr: {src: imgSrc}"></a>
+					            <div class="media-body">
+						            <span class="venueRating label-info badge" data-bind="text: rating,style: {'background-color': updatedRatingColor}"> </span>
+						            <a href="#" target="_parent"><h4 class="list-group-item-heading media-heading" data-bind="text: name"></h4></a>	
+						            <p class="list-group-item-text " data-bind="text: category"></p>
+						            <p class="list-group-item-text" data-bind="text: address"></p>
+					            </div>
+				            </div>			
+		               </div>
+                    </div>
+                    <div class="infobox" style="display:none"></div>
+                    <div class="toggle">
+                        <button  data-bind="click:toggleDisplay" class="btn btn-primary">
+                            <span data-bind="css: {'glyphicon glyphicon-minus': displayPlaces(), 'glyphicon glyphicon-plus': !displayPlaces()}"></span>
+                        </button>
+                    </div>
+		        </div>
+	        </div>
+        </div>
+        <script src="js/knockout-3.3.0.js"></script>
+        <script src="js/jQuery.min.js"></script>
+        <script src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
+        <script src="http://google-maps-utility-library-v3.googlecode.com/svn/trunk/infobox/src/infobox.js"></script>
+        <script src="js/app.js"></script>
+    </body>
 </html>
